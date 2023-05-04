@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+//TODO: 1:14:22
 
 // provider scope
 void main() {
@@ -31,8 +32,10 @@ enum City {
   newYork,
 }
 
+// A weather emoji is a string
 typedef WeatherEmoji = String;
 
+// Simulates api call for getting the weather for a city
 Future<WeatherEmoji> getWeather(City city) {
   return Future.delayed(
     const Duration(seconds: 1),
@@ -45,6 +48,22 @@ Future<WeatherEmoji> getWeather(City city) {
         "?",
   );
 }
+
+// City weather state; will be changed by the UI
+final currentCityProvider = StateProvider<City?>((ref) => null);
+
+// UI writes to this; if the weather is unknown, we return a question mark emoji
+const unknownWeatherEmoji = "❓";
+
+// UI reads this; listens for changes in the currentCityProvider
+final weatherProvider = FutureProvider<WeatherEmoji>((ref) {
+  final city = ref.watch(currentCityProvider);
+  if (city != null) {
+    return getWeather(city);
+  } else {
+    return unknownWeatherEmoji;
+  }
+});
 
 // Home page screen
 class MyHomePage extends ConsumerWidget {
