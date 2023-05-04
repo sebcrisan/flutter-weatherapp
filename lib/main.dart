@@ -8,39 +8,42 @@ void main() {
   ));
 }
 
-// state notifier provider
-final counterProvider = StateNotifierProvider<Counter, int>(
-  (ref) => Counter(),
-);
-
-// state notifier, counter class
-class Counter extends StateNotifier<int> {
-  /// Init with 0
-  Counter() : super(0);
-
-  /// Increment counter
-  void incrementCounter() {
-    state++;
-  }
-
-  /// Get the current count value
-  int get value => state;
-}
-
-// Counter app with dark theme
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Weather App',
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Counter App'),
+      home: const MyHomePage(title: 'Weather App'),
     );
   }
+}
+
+// Hardcoded list of cities
+enum City {
+  stockholm,
+  paris,
+  tokyo,
+  newYork,
+}
+
+typedef WeatherEmoji = String;
+
+Future<WeatherEmoji> getWeather(City city) {
+  return Future.delayed(
+    const Duration(seconds: 1),
+    () =>
+        {
+          City.stockholm: "❄️",
+          City.paris: "🌧",
+          City.tokyo: "🌬",
+        }[city] ??
+        "?",
+  );
 }
 
 // Home page screen
@@ -55,26 +58,7 @@ class MyHomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Consumer(
-          builder: (context, ref, child) {
-            /// The counter
-            final count = ref.watch(counterProvider);
-
-            /// The count
-            final text = count <= 0 ? "Press the button" : count.toString();
-
-            return Text(text);
-          },
-        ),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextButton(
-            onPressed: ref.read(counterProvider.notifier).incrementCounter,
-            child: const Text('Increment count'),
-          ),
-        ],
+        title: const Text('Weather'),
       ),
     );
   }
