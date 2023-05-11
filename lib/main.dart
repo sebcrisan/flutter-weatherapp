@@ -75,9 +75,28 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    /// The current weather (async)
+    final currentWeather = ref.watch(weatherProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Weather'),
+      ),
+      body: Column(
+        children: [
+          Expanded(child: ListView.builder(itemCount: City.values.length, itemBuilder: (context, index){
+            /// The city for which the weather will be retrieved
+            final city = City.values[index];
+            /// Boolean that is true when a city is selected, can be used to rebuild
+            final isSelected = city == ref.watch(currentCityProvider);
+            return ListTile(title: Text(city.toString()),
+            trailing: isSelected ? const Icon(Icons.check) : null,
+            onTap: (){
+              ref.read(currentCityProvider.notifier).state = city;
+            },);
+          },)),
+        ],
       ),
     );
   }
