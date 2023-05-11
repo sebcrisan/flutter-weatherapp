@@ -85,6 +85,13 @@ class MyHomePage extends ConsumerWidget {
       ),
       body: Column(
         children: [
+          currentWeather.when(
+              data: (data) => Text(data, style: const TextStyle(fontSize: 40),),
+              error: (_, __) => const Text('Error'),
+              loading: () => const Padding(
+                padding:  EdgeInsets.all(8.0),
+                child:  CircularProgressIndicator(),
+              ),),
           Expanded(child: ListView.builder(itemCount: City.values.length, itemBuilder: (context, index){
             /// The city for which the weather will be retrieved
             final city = City.values[index];
